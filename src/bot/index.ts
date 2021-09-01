@@ -1,4 +1,4 @@
-import { Client, GuildStickerManager, Intents } from 'discord.js';
+import { CategoryChannel, Client, Intents } from 'discord.js';
 
 export default class Bot {
     client: Client;
@@ -19,7 +19,7 @@ export default class Bot {
         const guilds = await this.client.guilds.fetch();
         const guildManager = guilds.find(guild => guild.id == server);
         
-        if (!guildManager) return 404;
+        if (!guildManager) return [404, null];
         
         const guild = await guildManager.fetch();
         const roles = await guild.roles.fetch();
@@ -54,6 +54,29 @@ export default class Bot {
 
         everyoneRole.permissions.remove(['CREATE_INSTANT_INVITE', 'MENTION_EVERYONE']);
 
-        return 200;
+        return [200, null];
+    }
+
+    async newTeam(server: string, options: { name: string }) {
+        const guilds = await this.client.guilds.fetch();
+        const guildManager = guilds.find(guild => guild.id == server);
+        
+        if (!guildManager) return [404, null];
+        
+        const guild = await guildManager.fetch();
+        const roles = await guild.roles.fetch();
+        const channels = await guild.channels.fetch();
+
+        const teamCategory = channels.find(channel => channel.name == "Team Channels" && channel.type == "GUILD_CATEGORY");
+
+        if (!teamCategory) return [404, null];
+
+        const everyoneRole = guild.roles.everyone;
+        const staffRole = roles.find(role => role.name == 'Staff');
+        const mentorRole = roles.find(role => role.name == 'Mentor');
+        const teamRole = await guild.roles.create({ name: options.name, mentionable: false });
+        const teamChannel = await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
+    
+        return [200, teamRole.id];
     }
 }

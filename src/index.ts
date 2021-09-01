@@ -11,6 +11,8 @@ const port = 8080;
 const client = new Bot();
 client.login();
 app.set('client', client);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response) => {
     res.sendStatus(200);
@@ -18,7 +20,12 @@ app.get('/', (req: Request, res: Response) => {
 
 app.post('/setup/:server', async (req: Request, res: Response) => {
     const resp = await client.setup(req.params.server);
-    res.sendStatus(resp);
+    res.send(resp[0]);
+});
+
+app.post('/team/:server/new', async (req: Request, res: Response) => {
+    const resp = await client.newTeam(req.params.server, req.body);
+    res.send(resp[0]);
 });
 
 app.listen(port, () => {
