@@ -75,7 +75,8 @@ export default class Bot {
         const staffRole = roles.find(role => role.name == 'Staff');
         const mentorRole = roles.find(role => role.name == 'Mentor');
         const teamRole = await guild.roles.create({ name: options.name, mentionable: false });
-        const teamChannel = await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
+        const teamTextChannel = await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
+        const teamVoiceChannel = await guild.channels.create(options.name, { type: 'GUILD_VOICE', parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
     
         return [200, teamRole.id];
     }
