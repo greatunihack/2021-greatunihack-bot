@@ -4,7 +4,7 @@ export default class Bot {
     client: Client;
 
     async login() {
-        const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+        const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
 
         client.on('ready', () => {
             console.log('Discord Bot Online');
@@ -78,5 +78,25 @@ export default class Bot {
         const teamChannel = await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
     
         return [200, teamRole.id];
+    }
+
+    async setTeam(server: string, team: string, participant: string) {
+        const guilds = await this.client.guilds.fetch();
+        const guildManager = guilds.find(guild => guild.id == server);
+        
+        if (!guildManager) return [404, null];
+        
+        const guild = await guildManager.fetch();
+        const roles = await guild.roles.fetch();
+        const users = await guild.members.fetch();
+
+        const user = users.find(user => user.id == participant);
+        const role = roles.find(role => role.id == team);
+
+        if (!user || !role) return [404, null];
+
+        await user.roles.set([role]);
+
+        return [200, null];
     }
 }

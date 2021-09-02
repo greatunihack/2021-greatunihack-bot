@@ -23,8 +23,13 @@ app.post('/setup/:server', async (req: Request, res: Response) => {
     res.send(resp[0]);
 });
 
-app.post('/team/:server/new', async (req: Request, res: Response) => {
+app.post('/team/:server', async (req: Request, res: Response) => {
     const resp = await client.newTeam(req.params.server, req.body);
+    res.send(resp[0]);
+});
+
+app.post('/participant/:server/:team/:participant', async (req: Request, res: Response) => {
+    const resp = await client.setTeam(req.params.server, req.params.team, req.params.participant);
     res.send(resp[0]);
 });
 
