@@ -42,6 +42,7 @@ export default class Bot {
         const welcomeChannel = await guild.channels.create("welcome", { parent: announcementsCategory, permissionOverwrites: [{ id: staffRole, allow: ['SEND_MESSAGES'] }, { id: everyoneRole, deny: ['SEND_MESSAGES', 'EMBED_LINKS'] }] });
         const announcementsChannel = await guild.channels.create("announcements", { parent: announcementsCategory, permissionOverwrites: [{ id: staffRole, allow: ['SEND_MESSAGES'] }, { id: everyoneRole, deny: ['SEND_MESSAGES', 'EMBED_LINKS'] }] });
         const sponsorsAnnouncementsChannel = await guild.channels.create("sponsors", { parent: announcementsCategory, permissionOverwrites: [{ id: staffRole, allow: ['SEND_MESSAGES'] }, { id: sponsorRole, allow: ['SEND_MESSAGES', 'EMBED_LINKS'] }, { id: everyoneRole, deny: ['SEND_MESSAGES', 'EMBED_LINKS'] }] });
+        const generalChannel = await guild.channels.create("general", { parent: announcementsCategory, permissionOverwrites: [{ id: everyoneRole, deny: ['EMBED_LINKS'] }] });
         const helpChannel = await guild.channels.create("help", { parent: announcementsCategory, permissionOverwrites: [{ id: everyoneRole, deny: ['EMBED_LINKS'] }] });
 
         const staffCategory = await guild.channels.create("Staff Channels", { type: "GUILD_CATEGORY" });
