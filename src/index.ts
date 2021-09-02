@@ -33,7 +33,7 @@ app.get('/', (req: Request, res: Response) => {
 
 /**
  * 
- * @api {post} /setup/:server Prepare Server
+ * @api {post} /prepare/:server Prepare Server
  * @apiName PrepareServer
  * @apiDescription Prepares a server for a Hackathon event. All existing channels and roles are deleted and new ones implemented. You should do this on a new server.
  * @apiGroup Server
@@ -44,6 +44,7 @@ app.get('/', (req: Request, res: Response) => {
  * @apiParam (URL Parameters) {String} server ID of Server to Prepare
  * 
  * @apiSuccess (Successes) 200 Server was Successfully Prepared
+ * @apiError (Failures) 401 Application Secret Not Given or Invalid
  * @apiError (Failures) 404 Bot is Not in Server Given
  * 
  */
@@ -67,6 +68,7 @@ app.post('/prepare/:server', checkAuth, async (req: Request, res: Response) => {
  * @apiParam (Body Attributes) {String} name Name of New Team
  * 
  * @apiSuccess (Successes) 200 Team Added Successfully
+ * @apiError (Failures) 401 Application Secret Not Given or Invalid
  * @apiError (Failures) 404 Bot is Not in Server Given
  * 
  */
@@ -90,6 +92,7 @@ app.post('/team/:server', checkAuth, async (req: Request, res: Response) => {
  * 
  * @apiSuccess (Successes) 200 Team Removed Successfully
  * @apiError (Failures) 400 Participant is Still Assigned to Team
+ * @apiError (Failures) 401 Application Secret Not Given or Invalid
  * @apiError (Failures) 404 Bot is Not in Server Given or No Team Found with Given ID
  * 
  */
@@ -113,6 +116,7 @@ app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response)
  * @apiParam (URL Parameters) {String} team ID of Existing Team
  * 
  * @apiSuccess (Successes) 200 Participant Assigned Successfully
+ * @apiError (Failures) 401 Application Secret Not Given or Invalid
  * @apiError (Failures) 404 Bot is Not in Server Given, No Team Found with Given ID or No Participant Found with Given ID
  * 
  */
@@ -135,6 +139,7 @@ app.put('/participant/:server/:participant/:team', checkAuth, async (req: Reques
  * @apiParam (URL Parameters) {String} participant ID of Participant's Discord Account
  * 
  * @apiSuccess (Successes) 200 Participant Unassigned Successfully
+ * @apiError (Failures) 401 Application Secret Not Given or Invalid
  * @apiError (Failures) 404 Bot is Not in Server Given or No Participant Found with Given ID
  * 
  */
