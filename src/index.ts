@@ -16,6 +16,17 @@ app.set('client', client);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+/**
+ * 
+ * @api {get} / Check Web Server Status
+ * @apiName Test
+ * @apiDescription Returns a 200 Code when the Web Server is Running
+ * @apiGroup Developer
+ * @apiVersion  0.1.0
+ * 
+ * @apiSuccess (Successes) 200 Web Server is OK
+ * 
+ */
 app.get('/', (req: Request, res: Response) => {
     res.sendStatus(200);
 });
