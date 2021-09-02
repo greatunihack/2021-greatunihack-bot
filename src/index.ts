@@ -100,7 +100,7 @@ app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response)
 
 /**
  * 
- * @api {put} /participant/:server/:team/:participant Assign Participant to Team
+ * @api {put} /participant/:server/:participant/:team Assign Participant to Team
  * @apiName AssignParticipant
  * @apiDescription Assigns a participant to an existing team - automatically granting access to their team's text and voice channels. If the participant is already assigned to a team, they will lose access to their old team.
  * @apiGroup Participants
@@ -109,15 +109,37 @@ app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response)
  * @apiHeader (Headers) {String} Authorization Application Secret String
  * 
  * @apiParam (URL Parameters) {String} server ID of Prepared Hackathon Server
- * @apiParam (URL Parameters) {String} server ID of Existing Team
  * @apiParam (URL Parameters) {String} participant ID of Participant's Discord Account
+ * @apiParam (URL Parameters) {String} team ID of Existing Team
  * 
  * @apiSuccess (Successes) 200 Participant Assigned Successfully
  * @apiError (Failures) 404 Bot is Not in Server Given, No Team Found with Given ID or No Participant Found with Given ID
  * 
  */
-app.put('/participant/:server/:team/:participant', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.setTeam(req.params.server, req.params.team, req.params.participant);
+app.put('/participant/:server/:participant/:team', checkAuth, async (req: Request, res: Response) => {
+    const resp = await client.assignParticipant(req.params.server, req.params.team, req.params.participant);
+    res.send(resp[0]);
+});
+
+/**
+ * 
+ * @api {delete} /participant/:server/:participant Unassign Participant from All Teams
+ * @apiName UnassignParticipant
+ * @apiDescription Unassign a participant from all teams - automatically removing access to all teams' text and voice channels.
+ * @apiGroup Participants
+ * @apiVersion  0.1.0
+ * 
+ * @apiHeader (Headers) {String} Authorization Application Secret String
+ * 
+ * @apiParam (URL Parameters) {String} server ID of Prepared Hackathon Server
+ * @apiParam (URL Parameters) {String} participant ID of Participant's Discord Account
+ * 
+ * @apiSuccess (Successes) 200 Participant Unassigned Successfully
+ * @apiError (Failures) 404 Bot is Not in Server Given or No Participant Found with Given ID
+ * 
+ */
+app.delete('/participant/:server/:participant', checkAuth, async (req: Request, res: Response) => {
+    const resp = await client.unassignParticipant(req.params.server, req.params.participant);
     res.send(resp[0]);
 });
 

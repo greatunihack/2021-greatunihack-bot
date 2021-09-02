@@ -106,7 +106,7 @@ export default class Bot {
         return [200, null];
     }
 
-    async setTeam(server: string, team: string, participant: string) {
+    async assignParticipant(server: string, team: string, participant: string) {
         const guilds = await this.client.guilds.fetch();
         const guildManager = guilds.find(guild => guild.id == server);
         
@@ -122,6 +122,24 @@ export default class Bot {
         if (!user || !role) return [404, null];
 
         await user.roles.set([role]);
+
+        return [200, null];
+    }
+
+    async unassignParticipant(server: string, participant: string) {
+        const guilds = await this.client.guilds.fetch();
+        const guildManager = guilds.find(guild => guild.id == server);
+        
+        if (!guildManager) return [404, null];
+        
+        const guild = await guildManager.fetch();
+        const users = await guild.members.fetch();
+
+        const user = users.find(user => user.id == participant);
+
+        if (!user) return [404, null];
+
+        await user.roles.set([]);
 
         return [200, null];
     }
