@@ -127,6 +127,28 @@ app.put('/participant/:server/:participant/:team', checkAuth, async (req: Reques
 
 /**
  * 
+ * @api {get} /participant/:server/:participant Check Participant is in Server
+ * @apiName CheckParticipant
+ * @apiDescription Check if a participant is in the Hackathon Discord Server.
+ * @apiGroup Participants
+ * @apiVersion  0.1.0
+ * 
+ * @apiHeader (Headers) {String} Authorization Application Secret String
+ * 
+ * @apiParam (URL Parameters) {String} server ID of Prepared Hackathon Server
+ * @apiParam (URL Parameters) {String} participant ID of Participant's Discord Account
+ * 
+ * @apiSuccess (Successes) 200 Participant in Server
+ * @apiError (Failures) 404 Bot is Not in Server Given or Participant Not in Server
+ * 
+ */
+app.get('/participant/:server/:participant', checkAuth, async (req: Request, res: Response) => {
+    const resp = await client.checkParticipant(req.params.server, req.params.participant);
+    res.send(resp[0]);
+});
+
+/**
+ * 
  * @api {delete} /participant/:server/:participant Unassign Participant from All Teams
  * @apiName UnassignParticipant
  * @apiDescription Unassign a participant from all teams - automatically removing access to all teams' text and voice channels.
