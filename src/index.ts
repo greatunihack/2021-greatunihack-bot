@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import * as dotenv from 'dotenv'
 
+import checkAuth from './auth';
+
 import Bot from './bot';
 
 dotenv.config();
@@ -26,13 +28,15 @@ app.get('/', (req: Request, res: Response) => {
  * @apiGroup Server
  * @apiVersion  0.1.0
  * 
+ * @apiHeader (Headers) {String} Authorization Application Secret String
+ * 
  * @apiParam (URL Parameters) {String} server ID of Server to Prepare
  * 
  * @apiSuccess (Successes) 200 Server was Successfully Prepared
  * @apiError (Failures) 404 Bot is Not in Server Given
  * 
  */
-app.post('/prepare/:server', async (req: Request, res: Response) => {
+app.post('/prepare/:server', checkAuth, async (req: Request, res: Response) => {
     const resp = await client.setup(req.params.server);
     res.send(resp[0]);
 });
@@ -45,6 +49,8 @@ app.post('/prepare/:server', async (req: Request, res: Response) => {
  * @apiGroup Teams
  * @apiVersion  0.1.0
  * 
+ * @apiHeader (Headers) {String} Authorization Application Secret String
+ * 
  * @apiParam (URL Parameters) {String} server ID of Prepared Hackathon Server
  * 
  * @apiParam (Body Attributes) {String} name Name of New Team
@@ -53,7 +59,7 @@ app.post('/prepare/:server', async (req: Request, res: Response) => {
  * @apiError (Failures) 404 Bot is Not in Server Given
  * 
  */
-app.post('/team/:server', async (req: Request, res: Response) => {
+app.post('/team/:server', checkAuth, async (req: Request, res: Response) => {
     const resp = await client.newTeam(req.params.server, req.body);
     res.send(resp[0]);
 });
@@ -66,6 +72,8 @@ app.post('/team/:server', async (req: Request, res: Response) => {
  * @apiGroup Teams
  * @apiVersion  0.1.0
  * 
+ * @apiHeader (Headers) {String} Authorization Application Secret String
+ * 
  * @apiParam (URL Parameters) {String} server ID of Prepared Hackathon Server
  * @apiParam (URL Parameters) {String} team ID of Existing Team
  * 
@@ -74,7 +82,7 @@ app.post('/team/:server', async (req: Request, res: Response) => {
  * @apiError (Failures) 404 Bot is Not in Server Given or No Team Found with Given ID
  * 
  */
-app.delete('/team/:server/:team', async (req: Request, res: Response) => {
+app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response) => {
     const resp = await client.deleteTeam(req.params.server, req.params.team);
     res.send(resp[0]);
 });
@@ -87,6 +95,8 @@ app.delete('/team/:server/:team', async (req: Request, res: Response) => {
  * @apiGroup Participants
  * @apiVersion  0.1.0
  * 
+ * @apiHeader (Headers) {String} Authorization Application Secret String
+ * 
  * @apiParam (URL Parameters) {String} server ID of Prepared Hackathon Server
  * @apiParam (URL Parameters) {String} server ID of Existing Team
  * @apiParam (URL Parameters) {String} participant ID of Participant's Discord Account
@@ -95,7 +105,7 @@ app.delete('/team/:server/:team', async (req: Request, res: Response) => {
  * @apiError (Failures) 404 Bot is Not in Server Given, No Team Found with Given ID or No Participant Found with Given ID
  * 
  */
-app.put('/participant/:server/:team/:participant', async (req: Request, res: Response) => {
+app.put('/participant/:server/:team/:participant', checkAuth, async (req: Request, res: Response) => {
     const resp = await client.setTeam(req.params.server, req.params.team, req.params.participant);
     res.send(resp[0]);
 });
