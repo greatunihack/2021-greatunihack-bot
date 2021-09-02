@@ -81,6 +81,31 @@ export default class Bot {
         return [200, teamRole.id];
     }
 
+    async deleteTeam(server: string, team: string) {
+        const guilds = await this.client.guilds.fetch();
+        const guildManager = guilds.find(guild => guild.id == server);
+        
+        if (!guildManager) return [404, null];
+        
+        const guild = await guildManager.fetch();
+        const roles = await guild.roles.fetch();
+        const channels = await guild.channels.fetch();
+
+        const role = roles.find(role => role.id == team);
+
+        if (!role) return [404, null];
+        if (role.members.size) return [400, null];
+
+        const teamChannels = channels.filter(channel => channel.permissionsFor(role).has('VIEW_CHANNEL') && channel.parent && channel.parent.name == 'Team Channels');
+        teamChannels.each(async (channel) => {
+            await channel.delete();
+        });
+
+        await role.delete();
+
+        return [200, null];
+    }
+
     async setTeam(server: string, team: string, participant: string) {
         const guilds = await this.client.guilds.fetch();
         const guildManager = guilds.find(guild => guild.id == server);

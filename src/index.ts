@@ -28,6 +28,11 @@ app.post('/team/:server', async (req: Request, res: Response) => {
     res.send(resp[0]);
 });
 
+app.delete('/team/:server/:team', async (req: Request, res: Response) => {
+    const resp = await client.deleteTeam(req.params.server, req.params.team);
+    res.send(resp[0]);
+});
+
 app.post('/participant/:server/:team/:participant', async (req: Request, res: Response) => {
     const resp = await client.setTeam(req.params.server, req.params.team, req.params.participant);
     res.send(resp[0]);
