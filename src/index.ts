@@ -1,16 +1,16 @@
-import express, { Request, Response } from 'express';
+import express, { Express, Request, Response } from 'express';
 import * as dotenv from 'dotenv'
 
 import checkAuth from './auth';
 
-import Bot from './bot';
+import Bot, { HTTPResponse } from './bot';
 
 dotenv.config();
 
-const app = express();
-const port = 8080;
+const app: Express = express();
+const port: number = 8080;
 
-const client = new Bot();
+const client: Bot = new Bot();
 client.login();
 app.set('client', client);
 app.use(express.json());
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
  * @apiSuccess (Successes) 200 Web Server is OK
  * 
  */
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response): void => {
     res.sendStatus(200);
 });
 
@@ -48,9 +48,9 @@ app.get('/', (req: Request, res: Response) => {
  * @apiError (Failures) 404 Bot is Not in Server Given
  * 
  */
-app.post('/prepare/:server', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.setup(req.params.server);
-    res.send(resp[0]);
+app.post('/prepare/:server', checkAuth, async (req: Request, res: Response): Promise<void> => {
+    const resp: HTTPResponse = await client.setup(req.params.server);
+    res.sendStatus(resp.code).send(resp.message);
 });
 
 /**
@@ -72,9 +72,9 @@ app.post('/prepare/:server', checkAuth, async (req: Request, res: Response) => {
  * @apiError (Failures) 404 Bot is Not in Server Given
  * 
  */
-app.post('/team/:server', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.newTeam(req.params.server, req.body);
-    res.send(resp[0]);
+app.post('/team/:server', checkAuth, async (req: Request, res: Response): Promise<void> => {
+    const resp: HTTPResponse = await client.newTeam(req.params.server, req.body);
+    res.sendStatus(resp.code).send(resp.message);
 });
 
 /**
@@ -96,9 +96,9 @@ app.post('/team/:server', checkAuth, async (req: Request, res: Response) => {
  * @apiError (Failures) 404 Bot is Not in Server Given or No Team Found with Given ID
  * 
  */
-app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.deleteTeam(req.params.server, req.params.team);
-    res.send(resp[0]);
+app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response): Promise<void> => {
+    const resp: HTTPResponse = await client.deleteTeam(req.params.server, req.params.team);
+    res.sendStatus(resp.code).send(resp.message);
 });
 
 /**
@@ -120,9 +120,9 @@ app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response)
  * @apiError (Failures) 404 Bot is Not in Server Given, No Team Found with Given ID or No Participant Found with Given ID
  * 
  */
-app.put('/participant/:server/:participant/:team', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.assignParticipant(req.params.server, req.params.team, req.params.participant);
-    res.send(resp[0]);
+app.put('/participant/:server/:participant/:team', checkAuth, async (req: Request, res: Response): Promise<void> => {
+    const resp: HTTPResponse = await client.assignParticipant(req.params.server, req.params.team, req.params.participant);
+    res.sendStatus(resp.code).send(resp.message);
 });
 
 /**
@@ -142,9 +142,9 @@ app.put('/participant/:server/:participant/:team', checkAuth, async (req: Reques
  * @apiError (Failures) 404 Bot is Not in Server Given or Participant Not in Server
  * 
  */
-app.get('/participant/:server/:participant', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.checkParticipant(req.params.server, req.params.participant);
-    res.send(resp[0]);
+app.get('/participant/:server/:participant', checkAuth, async (req: Request, res: Response): Promise<void> => {
+    const resp: HTTPResponse = await client.checkParticipant(req.params.server, req.params.participant);
+    res.sendStatus(resp.code).send(resp.message);
 });
 
 /**
@@ -165,11 +165,11 @@ app.get('/participant/:server/:participant', checkAuth, async (req: Request, res
  * @apiError (Failures) 404 Bot is Not in Server Given or No Participant Found with Given ID
  * 
  */
-app.delete('/participant/:server/:participant', checkAuth, async (req: Request, res: Response) => {
-    const resp = await client.unassignParticipant(req.params.server, req.params.participant);
-    res.send(resp[0]);
+app.delete('/participant/:server/:participant', checkAuth, async (req: Request, res: Response): Promise<void> => {
+    const resp: HTTPResponse = await client.unassignParticipant(req.params.server, req.params.participant);
+    res.sendStatus(resp.code).send(resp.message);
 });
 
-app.listen(port, () => {
+app.listen(port, (): void => {
     console.log(`Server Listening on ${port}`);
 });
