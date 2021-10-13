@@ -92,8 +92,8 @@ export default class Bot {
         
         await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
         await guild.channels.create(options.name, { type: 'GUILD_VOICE', parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
-    
-        return new HTTPResponse(200, teamRole.id);
+
+        return new HTTPResponse(200, "token" + teamRole.id.toString());
     }
 
     async deleteTeam(server: string, team: string): Promise<HTTPResponse> {

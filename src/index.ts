@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import * as dotenv from 'dotenv'
 
 import checkAuth from './auth';
@@ -15,6 +15,13 @@ client.login();
 app.set('client', client);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(function(req: Request, res: Response, next: NextFunction) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    next();
+});
 
 /**
  * 
@@ -50,7 +57,7 @@ app.get('/', (req: Request, res: Response): void => {
  */
 app.post('/prepare/:server', checkAuth, async (req: Request, res: Response): Promise<void> => {
     const resp: HTTPResponse = await client.setup(req.params.server);
-    res.sendStatus(resp.code).send(resp.message);
+    res.status(resp.code).send(resp.message);
 });
 
 /**
@@ -74,7 +81,7 @@ app.post('/prepare/:server', checkAuth, async (req: Request, res: Response): Pro
  */
 app.post('/team/:server', checkAuth, async (req: Request, res: Response): Promise<void> => {
     const resp: HTTPResponse = await client.newTeam(req.params.server, req.body);
-    res.sendStatus(resp.code).send(resp.message);
+    res.status(resp.code).send(resp.message);
 });
 
 /**
@@ -98,7 +105,7 @@ app.post('/team/:server', checkAuth, async (req: Request, res: Response): Promis
  */
 app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response): Promise<void> => {
     const resp: HTTPResponse = await client.deleteTeam(req.params.server, req.params.team);
-    res.sendStatus(resp.code).send(resp.message);
+    res.status(resp.code).send(resp.message);
 });
 
 /**
@@ -122,7 +129,7 @@ app.delete('/team/:server/:team', checkAuth, async (req: Request, res: Response)
  */
 app.put('/participant/:server/:participant/:team', checkAuth, async (req: Request, res: Response): Promise<void> => {
     const resp: HTTPResponse = await client.assignParticipant(req.params.server, req.params.team, req.params.participant);
-    res.sendStatus(resp.code).send(resp.message);
+    res.status(resp.code).send(resp.message);
 });
 
 /**
@@ -144,7 +151,7 @@ app.put('/participant/:server/:participant/:team', checkAuth, async (req: Reques
  */
 app.get('/participant/:server/:participant', checkAuth, async (req: Request, res: Response): Promise<void> => {
     const resp: HTTPResponse = await client.checkParticipant(req.params.server, req.params.participant);
-    res.sendStatus(resp.code).send(resp.message);
+    res.status(resp.code).send(resp.message);
 });
 
 /**
@@ -167,7 +174,7 @@ app.get('/participant/:server/:participant', checkAuth, async (req: Request, res
  */
 app.delete('/participant/:server/:participant', checkAuth, async (req: Request, res: Response): Promise<void> => {
     const resp: HTTPResponse = await client.unassignParticipant(req.params.server, req.params.participant);
-    res.sendStatus(resp.code).send(resp.message);
+    res.status(resp.code).send(resp.message);
 });
 
 app.listen(port, (): void => {
