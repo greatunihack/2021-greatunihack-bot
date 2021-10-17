@@ -20,6 +20,7 @@
   "homepage": "https://github.com/greatunihack/2021-greatunihack-bot#readme",
   "dependencies": {
     "@types/express": "^4.17.13",
+    "cors": "^2.8.5",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
