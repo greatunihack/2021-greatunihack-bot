@@ -64,8 +64,6 @@ export default class Bot {
         await guild.channels.create("judges", { parent: staffCategory, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: judgeRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
         await guild.channels.create("mentors", { parent: staffCategory, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
         
-        await guild.channels.create("Team Channels", { type: "GUILD_CATEGORY" });
-        
         everyoneRole.permissions.remove(['CREATE_INSTANT_INVITE', 'MENTION_EVERYONE']);
 
         return new HTTPResponse(200, null);
@@ -79,19 +77,15 @@ export default class Bot {
         
         const guild: Guild = await guildManager.fetch();
         const roles: Collection<string, Role> = await guild.roles.fetch();
-        const channels: Collection<string, AnyChannel> = await guild.channels.fetch();
-
-        const teamCategory: Channel = channels.find((channel: AnyChannel) => channel.name == "Team Channels" && channel.type == "GUILD_CATEGORY");
-
-        if (!teamCategory) return new HTTPResponse(404, null);
 
         const everyoneRole: Role = guild.roles.everyone;
         const staffRole: Role = roles.find((role: Role) => role.name == 'Staff');
         const mentorRole: Role = roles.find((role: Role) => role.name == 'Mentor');
         const teamRole: Role = await guild.roles.create({ name: options.name, mentionable: false });
         
-        await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
-        await guild.channels.create(options.name, { type: 'GUILD_VOICE', parent: teamCategory as CategoryChannel, permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] });
+        const teamCategory = await guild.channels.create(options.name, { type: 'GUILD_CATEGORY', permissionOverwrites: [{ id: staffRole, allow: ['VIEW_CHANNEL'] }, { id: mentorRole, allow: ['VIEW_CHANNEL'] }, { id: teamRole, allow: ['VIEW_CHANNEL'] }, { id: everyoneRole, deny: ['VIEW_CHANNEL'] }] })
+        await guild.channels.create(options.name, { parent: teamCategory as CategoryChannel });
+        await guild.channels.create(options.name, { type: 'GUILD_VOICE', parent: teamCategory as CategoryChannel });
 
         return new HTTPResponse(200, "token" + teamRole.id.toString());
     }
@@ -111,11 +105,14 @@ export default class Bot {
         if (!role) return new HTTPResponse(404, null);
         if (role.members.size) return new HTTPResponse(400, null);
 
-        const teamChannels: Collection<string, Channel> = channels.filter((channel: AnyChannel) => channel.permissionsFor(role).has('VIEW_CHANNEL') && channel.parent && channel.parent.name == 'Team Channels');
+        const categoryChannels: Collection<string, CategoryChannel> = (channels.filter((channel: AnyChannel) => channel.type == 'GUILD_CATEGORY') as Collection<string, CategoryChannel>);
+        const teamCategory: CategoryChannel = categoryChannels.filter((channel: CategoryChannel) => channel.permissionsFor(role).has('VIEW_CHANNEL') && channel.name != 'Group Channels' && channel.name != 'Staff Channels').map((x) => x)[0]
+        const teamChannels: Collection<string, Channel> = channels.filter((channel: AnyChannel) => channel.parent == teamCategory); 
         teamChannels.each(async (channel: Channel) => {
             await channel.delete();
         });
-
+        
+        await teamCategory.delete();
         await role.delete();
 
         return new HTTPResponse(200, null);
