@@ -1,24 +1,22 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import * as dotenv from 'dotenv'
-var cors = require('cors')
-
 import checkAuth from './auth';
-
 import Bot, { HTTPResponse } from './bot';
 
 dotenv.config();
 
+const cors = require('cors')
 const app: Express = express();
 const port: number = 8080;
 const client: Bot = new Bot();
 
-app.use(cors())
-app.use(function(req: Request, res: Response, next: NextFunction) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    next();
-});
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
 
 client.login();
 app.set('client', client);
