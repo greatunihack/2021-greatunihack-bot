@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "docs": "npx apidoc -i src/ -o docs/",
-    "gcp-build": "tsc -p ."
+    "gcp-build": "tsc -p .",
+    "build": "tsc -p .",
+    "heroku-postbuild": "npm run build"
   },
   "repository": {
     "type": "git",
