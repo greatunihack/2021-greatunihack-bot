@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/index.js",
+    "start:dev": "tsc -p . && nodemon ./dist/index.js",
     "docs": "npx apidoc -i src/ -o docs/",
     "gcp-build": "tsc -p .",
     "build": "tsc -p .",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "prettier": "npx prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -29,6 +31,7 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "nodemon": "^2.0.14",
     "apidoc": "^0.29.0"
   },
   "engines": {

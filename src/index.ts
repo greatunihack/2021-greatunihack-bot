@@ -7,7 +7,7 @@ dotenv.config();
 
 const cors = require("cors");
 const app: Express = express();
-const port: number = 8080;
+const port: number = parseInt(process.env.PORT) || 8080;
 const client: Bot = new Bot();
 
 app.use(

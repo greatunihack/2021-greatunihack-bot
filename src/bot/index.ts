@@ -51,6 +51,8 @@ export default class Bot {
   }
 
   async setup(server: string): Promise<HTTPResponse> {
+    console.log(this.client.guilds);
+
     const guilds: Collection<string, OAuth2Guild> =
       await this.client.guilds.fetch();
     const guildManager: OAuth2Guild = guilds.find(
@@ -181,6 +183,8 @@ export default class Bot {
     server: string,
     options: { name: string }
   ): Promise<HTTPResponse> {
+    console.log(this.client.guilds);
+
     const guilds: Collection<string, OAuth2Guild> =
       await this.client.guilds.fetch();
     const guildManager: OAuth2Guild = guilds.find(
@@ -221,6 +225,8 @@ export default class Bot {
   }
 
   async deleteTeam(server: string, team: string): Promise<HTTPResponse> {
+    console.log(this.client.guilds);
+
     const guilds: Collection<string, OAuth2Guild> =
       await this.client.guilds.fetch();
     const guildManager: OAuth2Guild = guilds.find(
@@ -268,6 +274,7 @@ export default class Bot {
     team: string,
     participant: string
   ): Promise<HTTPResponse> {
+    console.log(this.client.guilds);
     const guilds: Collection<string, OAuth2Guild> =
       await this.client.guilds.fetch();
     const guildManager: OAuth2Guild = guilds.find(
@@ -296,6 +303,8 @@ export default class Bot {
     server: string,
     participant: string
   ): Promise<HTTPResponse> {
+    console.log(this.client.guilds);
+
     const guilds: Collection<string, OAuth2Guild> =
       await this.client.guilds.fetch();
     const guildManager: OAuth2Guild = guilds.find(
@@ -319,6 +328,8 @@ export default class Bot {
     server: string,
     participant: string
   ): Promise<HTTPResponse> {
+    console.log(this.client.guilds);
+
     const guilds: Collection<string, OAuth2Guild> =
       await this.client.guilds.fetch();
     const guildManager: OAuth2Guild = guilds.find(
