@@ -114,17 +114,17 @@ app.post(
  * @apiError (Failures) 404 Bot is Not in Server Given or No Team Found with Given ID
  *
  */
-app.delete(
-  "/team/:server/:team",
-  checkAuth,
-  async (req: Request, res: Response): Promise<void> => {
-    const resp: HTTPResponse = await client.deleteTeam(
-      req.params.server,
-      req.params.team
-    );
-    res.status(resp.code).send(resp.message);
-  }
-);
+// app.delete(
+//   "/team/:server/:team",
+//   checkAuth,
+//   async (req: Request, res: Response): Promise<void> => {
+//     const resp: HTTPResponse = await client.deleteTeam(
+//       req.params.server,
+//       req.params.team
+//     );
+//     res.status(resp.code).send(resp.message);
+//   }
+// );
 
 /**
  *
